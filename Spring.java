@@ -69,7 +69,20 @@ public class Spring {
     }
     //-------------------------------Task1 END ---------------------------------------------------------------------------
 
-    
+    //-------------------------------Task 2 START ----------------------------------------------------------------------
+
+    public Spring inSeries(Spring that) {
+        double K = this.k + that.k;
+        return new Spring(K);
+    }
+
+    public Spring inParallel(Spring that) {
+        double K = 1 / ((1 / this.k) + (1 / that.k));
+        return new Spring(K);
+    }
+
+
+
 
 }
 
