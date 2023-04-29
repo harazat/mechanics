@@ -1,13 +1,15 @@
-/**
- *  Spring class that represents a 1D massless spring.
- */
+///**
+// *  Spring class that represents a 1D massless spring.
+// */
+//
+
 
 public class Spring {
-    private double k = 1.0;
+    private double k;
 
     public Spring() {
+        k = 1;
     }
-
 
     public Spring(double k) {
         this.k = k;
@@ -17,72 +19,41 @@ public class Spring {
         return k;
     }
 
-    private void setStiffness(double k) {
+    private void setK(double k) {
         this.k = k;
     }
 
-
-//-----------------------------------Task 1 START --------------------------------------------------------------
     public double[] move(double t, double dt, double x0, double v0) {
-        double omega = Math.sqrt(k);
-        double A = x0;
-        double B = v0 / omega;
-        int n = (int) (t / dt);
-        double[] x = new double[n + 1];
-        for (int i = 0; i <= n; i++) {
-            double time = i * dt;
-            x[i] = A * Math.sin(omega * time) + B * Math.cos(omega * time);
-        }
-        return x;
+        return move(0, t, dt, x0, v0, 1);
     }
 
     public double[] move(double t, double dt, double x0) {
-        return move(t, dt, x0, 0.0);
+        return move(0, t, dt, x0, 0, 1);
     }
-
 
     public double[] move(double t0, double t1, double dt, double x0, double v0) {
-        double omega = Math.sqrt(k);
-        double A = x0;
-        double B = v0 / omega;
-        int n = (int) ((t1 - t0) / dt);
-        double[] x = new double[n + 1];
-        for (int i = 0; i <= n; i++) {
-            double time = t0 + i * dt;
-            x[i] = A * Math.sin(omega * time) + B * Math.cos(omega * time);
-        }
-        return x;
+        return move(t0, t1, dt, x0, v0, 1);
     }
-
 
     public double[] move(double t0, double t1, double dt, double x0, double v0, double m) {
-        double omega = Math.sqrt(k / m);
-        double A = x0;
-        double B = v0 / omega;
-        int n = (int) ((t1 - t0) / dt);
-        double[] x = new double[n + 1];
-        for (int i = 0; i <= n; i++) {
-            double time = t0 + i * dt;
-            x[i] = A * Math.sin(omega * time) + B * Math.cos(omega * time);
+        double omega = Math.sqrt(this.k / m);
+        int numOfPoints = (int) ((t1 - t0) / dt);
+        double[] x = new double[numOfPoints];
+        for (int i = 0; i < numOfPoints; i++) {
+            double arg = omega * (t0 + i * dt);
+            x[i] = x0 * Math.cos(arg) + v0 / omega * Math.sin(arg);
         }
+
         return x;
     }
-    //-------------------------------Task1 END ---------------------------------------------------------------------------
-
-    //-------------------------------Task 2 START ----------------------------------------------------------------------
 
     public Spring inSeries(Spring that) {
-        double K = this.k + that.k;
-        return new Spring(K);
+        double newK = (this.k * that.k) / (this.k + that.k);
+        return new Spring(newK);
     }
 
     public Spring inParallel(Spring that) {
-        double K = 1 / ((1 / this.k) + (1 / that.k));
-        return new Spring(K);
+        double newK = this.k + that.k;
+        return new Spring(newK);
     }
-
-
-
-
 }
-
